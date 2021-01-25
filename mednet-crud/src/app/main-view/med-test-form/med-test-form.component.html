@@ -1,0 +1,39 @@
+<mat-card>
+    <ng-container *ngIf="!voted; else update">
+        <form [formGroup]="createForm" (ngSubmit)="onCreate()">
+            <label>
+                MedTest ID:
+                <input type="text" formControlName="medTestId" required>
+            </label>
+            
+            <label>
+                MedProduct ID:
+                <input type="text" formControlName="medProductId" required>
+            </label>
+            <button type="submit" [disabled]="!createForm.valid">Submit</button>
+        </form>
+    </ng-container>
+    <ng-template #update>
+        <form [formGroup]="updateForm" (ngSubmit)="onUpdate()">
+            <label>
+                MedTest ID:
+                <input 
+                    type="text"
+                    formControlName="medTestId"
+                    required
+                >
+            </label>
+    
+            <label>
+                MedProduct ID:
+                <input type="text" formControlName="medProductId" required>
+            </label>
+            <label>
+                Is Used ?
+                <input type="checkbox" formControlName="isUsed">
+            </label>
+            <button type="submit" [disabled]="!updateForm.valid">Submit</button>
+        </form>    
+    </ng-template>
+    <hr>
+</mat-card>

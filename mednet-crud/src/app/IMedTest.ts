@@ -1,6 +1,6 @@
 import { IRecord } from "./IRecord";
 
-export interface IAsset {
+export interface IMedTest {
     key: string,
     record: IRecord
 }

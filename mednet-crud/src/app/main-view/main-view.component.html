@@ -1,0 +1,26 @@
+<h1>Welcome to MedSAVE</h1>
+<h2>See All Your Registered MedTests Here!</h2>
+
+<button 
+    (click)="onShowCreateForm()"
+    mat-icon-button color="primary" 
+    aria-label="Example icon button with a home icon"
+>
+  <mat-icon>add</mat-icon>
+</button>
+<button 
+    (click)="onRefresh()"
+    mat-icon-button color="primary" 
+    aria-label="Example icon button with a home icon"
+>
+  <mat-icon>refresh</mat-icon>
+</button>
+
+<ng-container *ngIf="this.showForm">
+    <med-test-form 
+      [formMode]="formMode" 
+      [voted]="votedForUpdate"
+      (closeForm)="onCloseForm()"></med-test-form>
+</ng-container>
+
+<med-test-table [dataSource]="dataSource" (voted)="onShowUpdateForm($event)"></med-test-table>

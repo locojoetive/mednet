@@ -1,6 +1,4 @@
-<h1>Welcome to MedSAVE</h1>
-<h2>See your assets here</h2>
-<div>
+<mat-card>
   <mat-table [dataSource]="dataSource">
     <ng-container matColumnDef="key">
       <mat-header-cell *matHeaderCellDef> Key </mat-header-cell>
@@ -10,30 +8,27 @@
       <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
       <mat-cell *matCellDef="let asset"> {{asset.record.id}} </mat-cell>
     </ng-container>
-    <ng-container matColumnDef="color">
-      <mat-header-cell *matHeaderCellDef> Color </mat-header-cell>
-      <mat-cell *matCellDef="let asset"> {{asset.record.color}} </mat-cell>
+    <ng-container matColumnDef="medProductId">
+      <mat-header-cell *matHeaderCellDef> MedProduct ID </mat-header-cell>
+      <mat-cell *matCellDef="let asset"> {{asset.record.medProductId}} </mat-cell>
     </ng-container>
-    <ng-container matColumnDef="size">
-      <mat-header-cell *matHeaderCellDef> Size </mat-header-cell>
-      <mat-cell *matCellDef="let asset"> {{asset.record.size}} </mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="owner">
-      <mat-header-cell *matHeaderCellDef> Owner </mat-header-cell>
-      <mat-cell *matCellDef="let asset"> {{asset.record.owner}} </mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="appraisedValue">
-      <mat-header-cell *matHeaderCellDef> Appraised Value </mat-header-cell>
-      <mat-cell *matCellDef="let asset"> {{asset.record.appraisedValue}} </mat-cell>
+    <ng-container matColumnDef="isUsed">
+      <mat-header-cell *matHeaderCellDef> Is Used </mat-header-cell>
+      <mat-cell *matCellDef="let asset"> {{asset.record.isUsed}} </mat-cell>
     </ng-container>
     <ng-container matColumnDef="docType">
-      <mat-header-cell *matHeaderCellDef> Doc Type </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef> DocType </mat-header-cell>
       <mat-cell *matCellDef="let asset"> {{asset.record.docType}} </mat-cell>
     </ng-container>
     <ng-container matColumnDef="modify">
       <mat-header-cell *matHeaderCellDef> Modify </mat-header-cell>
       <mat-cell *matCellDef="let asset"> 
-        <button mat-icon-button color="primary" aria-label="Example icon button with a home icon">
+        <button 
+          (click)="onUpdate(asset)"
+          mat-icon-button 
+          color="primary" 
+          aria-label="Example icon button with a home icon"
+        >
           <mat-icon>create</mat-icon>
         </button>
       </mat-cell>
@@ -41,7 +36,12 @@
     <ng-container matColumnDef="delete">
       <mat-header-cell *matHeaderCellDef> Delete </mat-header-cell>
       <mat-cell *matCellDef="let asset"> 
-        <button mat-icon-button color="primary" aria-label="Example icon button with a home icon">
+        <button 
+          (click)="onDelete(asset)"
+          mat-icon-button 
+          color="primary" 
+          aria-label="Example icon button with a home icon"
+        >
           <mat-icon>delete</mat-icon>
         </button>
       </mat-cell>
@@ -49,4 +49,4 @@
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
-</div>
+</mat-card>
