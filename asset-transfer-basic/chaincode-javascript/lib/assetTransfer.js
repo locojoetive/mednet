@@ -11,125 +11,19 @@ const { Contract } = require('fabric-contract-api');
 class AssetTransfer extends Contract {
 
     async InitLedger(ctx) {
-        const assets = [
-            {
-                ID: 'asset1',
-                Color: 'blue',
-                Size: 5,
-                Owner: 'Tomoko',
-                AppraisedValue: 300,
-            },
-            {
-                ID: 'asset2',
-                Color: 'red',
-                Size: 5,
-                Owner: 'Brad',
-                AppraisedValue: 400,
-            },
-            {
-                ID: 'asset3',
-                Color: 'green',
-                Size: 10,
-                Owner: 'Jin Soo',
-                AppraisedValue: 500,
-            },
-            {
-                ID: 'asset4',
-                Color: 'yellow',
-                Size: 10,
-                Owner: 'Max',
-                AppraisedValue: 600,
-            },
-            {
-                ID: 'asset5',
-                Color: 'black',
-                Size: 15,
-                Owner: 'Adriana',
-                AppraisedValue: 700,
-            },
-            {
-                ID: 'asset6',
-                Color: 'white',
-                Size: 15,
-                Owner: 'Michel',
-                AppraisedValue: 800,
-            },
-        ];
-
-        for (const asset of assets) {
-            asset.docType = 'asset';
-            await ctx.stub.putState(asset.ID, Buffer.from(JSON.stringify(asset)));
-            console.info(`Asset ${asset.ID} initialized`);
-        }
-    }
-
-    // CreateAsset issues a new asset to the world state with given details.
-    async CreateAsset(ctx, id, color, size, owner, appraisedValue) {
-        const asset = {
-            ID: id,
-            Color: color,
-            Size: size,
-            Owner: owner,
-            AppraisedValue: appraisedValue,
+        const medTest = {
+            id: 'dummyTest',
+            medProductId: 'dummyProduct',
+            isUsed: false,
         };
-        ctx.stub.putState(id, Buffer.from(JSON.stringify(asset)));
-        return JSON.stringify(asset);
+        medTest.docType = 'medTest';
+        await ctx.stub.putState(medTest.id, Buffer.from(JSON.stringify(medTest)));
+        console.info(`MedTest ${medTest.id} initialized`);
     }
 
-    // ReadAsset returns the asset stored in the world state with given id.
-    async ReadAsset(ctx, id) {
-        const assetJSON = await ctx.stub.getState(id); // get the asset from chaincode state
-        if (!assetJSON || assetJSON.length === 0) {
-            throw new Error(`The asset ${id} does not exist`);
-        }
-        return assetJSON.toString();
-    }
-
-    // UpdateAsset updates an existing asset in the world state with provided parameters.
-    async UpdateAsset(ctx, id, color, size, owner, appraisedValue) {
-        const exists = await this.AssetExists(ctx, id);
-        if (!exists) {
-            throw new Error(`The asset ${id} does not exist`);
-        }
-
-        // overwriting original asset with new asset
-        const updatedAsset = {
-            ID: id,
-            Color: color,
-            Size: size,
-            Owner: owner,
-            AppraisedValue: appraisedValue,
-        };
-        return ctx.stub.putState(id, Buffer.from(JSON.stringify(updatedAsset)));
-    }
-
-    // DeleteAsset deletes an given asset from the world state.
-    async DeleteAsset(ctx, id) {
-        const exists = await this.AssetExists(ctx, id);
-        if (!exists) {
-            throw new Error(`The asset ${id} does not exist`);
-        }
-        return ctx.stub.deleteState(id);
-    }
-
-    // AssetExists returns true when asset with given ID exists in world state.
-    async AssetExists(ctx, id) {
-        const assetJSON = await ctx.stub.getState(id);
-        return assetJSON && assetJSON.length > 0;
-    }
-
-    // TransferAsset updates the owner field of asset with given id in the world state.
-    async TransferAsset(ctx, id, newOwner) {
-        const assetString = await this.ReadAsset(ctx, id);
-        const asset = JSON.parse(assetString);
-        asset.Owner = newOwner;
-        return ctx.stub.putState(id, Buffer.from(JSON.stringify(asset)));
-    }
-
-    // GetAllAssets returns all assets found in the world state.
-    async GetAllAssets(ctx) {
+    async GetMedTests(ctx) {
         const allResults = [];
-        // range query with empty string for startKey and endKey does an open-ended query of all assets in the chaincode namespace.
+        // range query with empty string for startKey and endKey does an open-ended query of all medTests in the chaincode namespace.
         const iterator = await ctx.stub.getStateByRange('', '');
         let result = await iterator.next();
         while (!result.done) {
@@ -141,13 +35,64 @@ class AssetTransfer extends Contract {
                 console.log(err);
                 record = strValue;
             }
-            allResults.push({ Key: result.value.key, Record: record });
+            allResults.push({ key: result.value.key, record: record });
             result = await iterator.next();
         }
         return JSON.stringify(allResults);
     }
 
+    // CreateMedTest, creates new asset with ID and MedProduct ID
+    async CreateMedTest(ctx, id, medProductId) {
+        const medTest = {
+            id: id,
+            medProductId: medProductId,
+            isUsed: false,
+            docType: 'medTest'
+        };
+        ctx.stub.putState(id, Buffer.from(JSON.stringify(medTest)));
+        return JSON.stringify(medTest);
+    }
 
+    // ReadMedTest returns the medTest stored in the world state with given id.
+    async ReadMedTest(ctx, id) {
+        const medTestJSON = await ctx.stub.getState(id); // get the asset from chaincode state
+        if (!medTestJSON || medTestJSON.length === 0) {
+            throw new Error(`The medTest ${id} does not exist`);
+        }
+        return medTestJSON.toString();
+    }
+
+    // UpdateMedTest updates an existing asset in the world state with provided parameters.
+    async UpdateMedTest(ctx, id, medProductId, isUsed) {
+        const exists = await this.MedTestExists(ctx, id);
+        if (!exists) {
+            throw new Error(`The medtest ${id} does not exist`);
+        }
+
+        // overwriting original asset with new asset
+        const updatedAsset = {
+            id: id,
+            medProductId: medProductId,
+            isUsed: isUsed,
+            docType: 'medTest'
+        };
+        return ctx.stub.putState(id, Buffer.from(JSON.stringify(updatedAsset)));
+    }
+
+    // DeleteMedTest deletes an given asset from the world state.
+    async DeleteMedTest(ctx, id) {
+        const exists = await this.MedTestExists(ctx, id);
+        if (!exists) {
+            throw new Error(`The asset ${id} does not exist`);
+        }
+        return ctx.stub.deleteState(id);
+    }
+
+    // MedTestExists returns true when asset with given id exists in world state.
+    async MedTestExists(ctx, id) {
+        const assetJSON = await ctx.stub.getState(id);
+        return assetJSON && assetJSON.length > 0;
+    }
 }
 
 module.exports = AssetTransfer;
