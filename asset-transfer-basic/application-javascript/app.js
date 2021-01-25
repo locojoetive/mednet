@@ -22,8 +22,6 @@ var corsOptions = {
 
 app.use(cors(corsOptions))
 
-
-
 const channelName = 'mychannel';
 const chaincodeName = 'basic';
 const mspOrg1 = 'Org1MSP';
@@ -103,7 +101,7 @@ async function CreateMedTest(id, medProductId) {
 	console.log('\n--> Submit Transaction: CreateMedTest, creates new asset with ID and MedProduct ID');
 	const result = await contract.submitTransaction('CreateMedTest', id, medProductId);
 	console.log('*** Result: committed');
-	return result;
+	return "OK 200";
 }
 
 async function ReadMedTest(id) {
@@ -113,16 +111,16 @@ async function ReadMedTest(id) {
 	return result;
 }
 
-async function UpdateMedTest(id, medProductId, isUsed) {
+async function UpdateMedTest(key, id, medProductId, isUsed) {
 	console.log('\n--> Submit Transaction: Update medtest, with given ID');
-	const result = await contract.submitTransaction('UpdateMedTest', id, medProductId, isUsed);
+	const result = await contract.submitTransaction('UpdateMedTest', key, id, medProductId, isUsed);
 	console.log('*** Result: committed');
 	return result;
 }
 
-async function DeleteMedTest(id) {
+async function DeleteMedTest(key) {
 	console.log('\n--> Submit Transaction: Delete medtest, with given ID');
-	const result = await contract.submitTransaction('DeleteMedTest', id);
+	const result = await contract.submitTransaction('DeleteMedTest', key);
 	console.log('*** Result: committed');
 	return result;
 }
@@ -133,7 +131,7 @@ app.listen(8080, () => {
 		.catch(v => console.log("Something's wrong in the jellies....."));
 });
 
-app.get('/api/assets', async (req, res) => {
+app.get('/api/medTest', async (req, res) => {
 	if (req.body.id) {
 		res.send(JSON.parse((await ReadMedTest(req.body.id)).toString()))
 	} else {
@@ -141,20 +139,23 @@ app.get('/api/assets', async (req, res) => {
 	}
 });
 
-app.post('/api/assets', async (req, res) => {
+app.post('/api/medTest', async (req, res) => {
 	const { id, medProductId } = req.body;
-	const result = JSON.parse((await CreateMedTest(id, medProductId)).toString());
-	res.send(result);
+	console.log("ID: " + id + " MedProductId: " + medProductId);
+	await CreateMedTest(id, medProductId);
+	res.sendStatus(200);
 });
 
-app.put('/api/assets', async (req, res) => {
-	const {id, medProductId, isUsed} = req.body;
-	const result = JSON.parse((await UpdateMedTest(id, medProductId, isUsed)).toString());
-	res.send(result);
+app.put('/api/medTest', async (req, res) => {
+	const {key, id, medProductId, isUsed} = req.body;
+	console.log("Key:" + key + " ID:" + id + " MedProductId:" + medProductId + " IsUsed:" + isUsed);
+	await UpdateMedTest(key, id, medProductId, isUsed);
+	res.sendStatus(200);
 });
 
-app.delete('/api/assets', async (req, res) => {
-	const result = JSON.parse((await DeleteMedTest(req.body.id)).toString());
-	console.log(result);
-	res.send(result);
+app.delete('/api/medTest/:key', async (req, res) => {
+	const {key} = req.params;
+	console.log("Key: " + key);
+	await DeleteMedTest(key)
+	res.sendStatus(200);
 });

@@ -9,7 +9,6 @@
 const { Contract } = require('fabric-contract-api');
 
 class AssetTransfer extends Contract {
-
     async InitLedger(ctx) {
         const medTest = {
             id: 'dummyTest',
@@ -17,7 +16,8 @@ class AssetTransfer extends Contract {
             isUsed: false,
         };
         medTest.docType = 'medTest';
-        await ctx.stub.putState(medTest.id, Buffer.from(JSON.stringify(medTest)));
+        const key = medTest.medProductId + "-" + medTest.id;
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(medTest)));
         console.info(`MedTest ${medTest.id} initialized`);
     }
 
@@ -49,7 +49,8 @@ class AssetTransfer extends Contract {
             isUsed: false,
             docType: 'medTest'
         };
-        ctx.stub.putState(id, Buffer.from(JSON.stringify(medTest)));
+        const key = medProductId + "-" + id;
+        ctx.stub.putState(key, Buffer.from(JSON.stringify(medTest)));
         return JSON.stringify(medTest);
     }
 
@@ -63,8 +64,8 @@ class AssetTransfer extends Contract {
     }
 
     // UpdateMedTest updates an existing asset in the world state with provided parameters.
-    async UpdateMedTest(ctx, id, medProductId, isUsed) {
-        const exists = await this.MedTestExists(ctx, id);
+    async UpdateMedTest(ctx, key, id, medProductId, isUsed) {
+        const exists = await this.MedTestExists(ctx, key);
         if (!exists) {
             throw new Error(`The medtest ${id} does not exist`);
         }
@@ -72,20 +73,20 @@ class AssetTransfer extends Contract {
         // overwriting original asset with new asset
         const updatedAsset = {
             id: id,
-            medProductId: medProductId,
-            isUsed: isUsed,
+            medProductId,
+            isUsed,
             docType: 'medTest'
         };
-        return ctx.stub.putState(id, Buffer.from(JSON.stringify(updatedAsset)));
+        return ctx.stub.putState(key, Buffer.from(JSON.stringify(updatedAsset)));
     }
 
     // DeleteMedTest deletes an given asset from the world state.
-    async DeleteMedTest(ctx, id) {
-        const exists = await this.MedTestExists(ctx, id);
+    async DeleteMedTest(ctx, key) {
+        const exists = await this.MedTestExists(ctx, key);
         if (!exists) {
-            throw new Error(`The asset ${id} does not exist`);
+            throw new Error(`The asset ${key} does not exist`);
         }
-        return ctx.stub.deleteState(id);
+        return ctx.stub.deleteState(key);
     }
 
     // MedTestExists returns true when asset with given id exists in world state.
