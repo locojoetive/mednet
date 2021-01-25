@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs/'
-import { HttpClient, HttpParams } from '@angular/common/http'
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
 import { IMedTest } from './IMedTest';
 
 @Injectable()
@@ -10,36 +10,49 @@ export class MedTestService {
   constructor(private http: HttpClient) {}
 
   getMedTests(): Observable<IMedTest[]> {
-    return this.http.get<IMedTest[]>('http://localhost:8080/api/assets');
+    return this.http.get<IMedTest[]>('http://localhost:8080/api/medTest');
   }
 
   getMedTest(id: string): Observable<IMedTest> {
     let params = new HttpParams().set('id', id);
-    return this.http.get<IMedTest>('http://localhost:8080/api/assets/', {params})
+    return this.http.get<IMedTest>('http://localhost:8080/api/medTest/', {params})
   }
 
-  createMedTest(medTest: IMedTest): Observable<IMedTest> {
+  createMedTest(medTest: IMedTest) {
     const {id, medProductId} = medTest.record;
-    let params = new HttpParams();
-    params.append('id', id);
-    params.append('medProductId', medProductId);
-    return this.http.post<IMedTest>('http://localhost:8080/api/assets/', {params})
+    const body = { id, medProductId };
+    const result = this.http.post('http://localhost:8080/api/medTest/', body ,{responseType: 'text'}).subscribe({
+      next: data => {
+          console.log("CREATE successful: " + data);
+      },
+      error: error => {
+          console.log('CREATE failed: ', error);
+      }
+    });
   }
 
-  updateMedTest(medTest: IMedTest): Observable<boolean> {
-    const {id, medProductId, isUsed, docType} = medTest.record;
-
-    let params = new HttpParams();
-    params.append('id', id);
-    params.append('medProductId', medProductId);
-    params.append('isUsed', isUsed ? 'true' : 'false');
-    params.append('docType', docType);
-    
-    return this.http.put<boolean>('http://localhost:8080/api/assets/', {params})
+  updateMedTest(medTest: IMedTest) {
+    const {id, medProductId, isUsed} = medTest.record;
+    const key = medTest.key;
+    const body = { key, id, medProductId, isUsed };
+    this.http.put('http://localhost:8080/api/medTest/', body ,{responseType: 'text'}).subscribe({
+      next: data => {
+          console.log("UPDATE successful: " + data);
+      },
+      error: error => {
+          console.log('UPDATE failed: ', error);
+      }
+    });
   }
 
-  deleteMedTest(id: string){
-    let params = new HttpParams().set('id', id);
-    return this.http.delete('http://localhost:8080/api/assets/', {params})
+  deleteMedTest(key: string) {
+    this.http.delete('http://localhost:8080/api/medTest/' + key, {responseType: 'text'}).subscribe({
+      next: data => {
+          console.log("DELETE successful: " + data);
+      },
+      error: error => {
+          console.log('DELETE failed: ', error);
+      }
+    });
   }
 }

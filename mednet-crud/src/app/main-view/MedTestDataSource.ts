@@ -9,7 +9,6 @@ export class MedTestDataSource extends DataSource<any> {
     }
     connect(): Observable<IMedTest[]> {
       const assets = this.assetService.getMedTests();
-      assets.subscribe(data => console.log(data));
       return assets;
     }
   

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { IMedTest } from '../IMedTest';
 import { MedTestService } from '../med-test.service';
-import { MedTest } from '../MedTest';
 import { FormMode } from './med-test-form/FormMode';
 import { MedTestDataSource } from './MedTestDataSource';
 
@@ -15,7 +14,7 @@ export class MainViewComponent {
   dataSource : MedTestDataSource;
   showForm = false;
   
-  votedForUpdate!: MedTest | null;
+  votedForUpdate!: IMedTest | null;
 
   constructor(
     private assetService: MedTestService
@@ -35,7 +34,7 @@ export class MainViewComponent {
 
   onShowUpdateForm(voted: IMedTest) {
     this.showForm = true;
-    this.votedForUpdate = new MedTest(voted);
+    this.votedForUpdate = voted;
   }
 
   onCloseForm() {

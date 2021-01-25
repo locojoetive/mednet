@@ -1,8 +1,8 @@
 import { Component, Input, OnChanges, Output, SimpleChanges, EventEmitter } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
+import { IMedTest } from 'src/app/IMedTest';
 import { MedTestService } from 'src/app/med-test.service';
-import { MedTest } from 'src/app/MedTest';
 import { FormMode } from './FormMode';
 
 @Component({
@@ -12,7 +12,7 @@ import { FormMode } from './FormMode';
 })
 export class MedTestFormComponent implements OnChanges {
   @Input('formMode') formMode: FormMode = FormMode.CREATE;
-  @Input('voted') voted!: MedTest | null;
+  @Input('voted') voted!: IMedTest | null;
   @Output() closeForm = new EventEmitter<boolean>();
 
   createForm = this.fb.group({
@@ -32,9 +32,8 @@ export class MedTestFormComponent implements OnChanges {
   ) { }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(changes.voted.currentValue);
     if (changes.voted.currentValue != null) {
-      const toUpdate = changes.voted.currentValue;
+      const toUpdate = changes.voted.currentValue.record;
       this.updateForm.setValue({
         medTestId: toUpdate.id,
         medProductId: toUpdate.medProductId,
@@ -56,24 +55,26 @@ export class MedTestFormComponent implements OnChanges {
         docType: "medTest"
       }
     }
-    // this.medTestService.createMedTest(medTest);
+    this.medTestService.createMedTest(medTest);
     this.closeForm.emit(true);
   }
   
   onUpdate() {
-    const {medTestId, medProductId, isUsed } = this.updateForm.value;
-    const key = medProductId + "-" + medTestId;
-    const id = medTestId;
-    const medTest = {
-      key,
-      record: {
-        id,
-        medProductId,
-        isUsed,
-        docType: "medTest"
+    if (this.voted != null) {
+      const {medTestId, medProductId, isUsed } = this.updateForm.value;
+      const key = this.voted.key;
+      const id = medTestId;
+      const medTest = {
+        key,
+        record: {
+          id,
+          medProductId,
+          isUsed,
+          docType: "medTest"
+        }
       }
+      this.medTestService.updateMedTest(medTest);
     }
-    // this.medTestService.updateMedTest(medTest);
     this.closeForm.emit(true);
   }
 }

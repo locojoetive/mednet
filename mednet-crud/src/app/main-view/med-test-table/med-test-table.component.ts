@@ -31,6 +31,6 @@ export class MedTestTableComponent {
   }
 
   onDelete(voted: IMedTest) {
-    this.medTestService.deleteMedTest(voted.record.id);
+    this.medTestService.deleteMedTest(voted.key);
   }
 }
