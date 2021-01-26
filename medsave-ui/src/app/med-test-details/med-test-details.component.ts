@@ -19,7 +19,7 @@ export class MedTestDetailsComponent {
     private route: ActivatedRoute,
     private router: Router,
     private medTestService: MedTestService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.route.paramMap.pipe(

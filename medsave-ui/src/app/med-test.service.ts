@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IMedTest } from './IMedTest';
 
@@ -7,10 +7,11 @@ import { IMedTest } from './IMedTest';
   providedIn: 'root'
 })
 export class MedTestService {
-  url = 'http://8cb54631e7a8.ngrok.io/api/medTest/';
+  url = 'http://localhost:4201/api/medTest/';
   constructor(private http: HttpClient) { }
 
   getMedTest(key: string): Observable<IMedTest> {
-    return this.http.get<IMedTest>(this.url + key);
+    const headers = new HttpHeaders().set("Bypass-Tunnel-Reminder", "something");
+    return this.http.get<IMedTest>(this.url + key, {headers});
   }
 }

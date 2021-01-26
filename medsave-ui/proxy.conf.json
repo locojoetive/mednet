@@ -1,0 +1,7 @@
+{
+  "/api": {
+    "target": "https://medsave.loca.lt",
+    "secure": true,
+    "changeOrigin": true
+  }
+}
