@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { IMedTest } from '../IMedTest';
 import { MedTestService } from '../med-test.service';
-
-import { Observable, pipe } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'med-test-details',
@@ -13,7 +12,10 @@ import { switchMap } from 'rxjs/operators';
 })
 export class MedTestDetailsComponent {
   medTest: IMedTest | null = null;
-  showTest = false;
+  key = "";
+  showLoading = false;
+  isUpdating = false;
+  isUpdated = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -22,10 +24,20 @@ export class MedTestDetailsComponent {
   ) { }
 
   ngOnInit() {
+    this.fetchMedTest();
+  }
+
+  fetchMedTest() {
+    this.medTest = null;
     this.route.paramMap.pipe(
       switchMap((params: ParamMap) => {
         const key = params.get('id');
+        this.showLoading = true;
+        setTimeout(() => {
+          this.showLoading = false;
+        }, 20000)
         if (key) {
+          this.key = key;
           console.log("Requesting " + key);
           return this.medTestService.getMedTest(key);
         } else {
@@ -34,14 +46,30 @@ export class MedTestDetailsComponent {
         }
       })
     ).subscribe(data => {
+      console.log("incoming data...", data);
       this.medTest = data;
+      if (this.medTest)
+        this.medTest.key = this.key;
       console.log(this.medTest);
-      this.showTest = true;
+      this.showLoading = false;
     });
   }
 
-
   updateTest() {
-    // TODO: set isUsed true and call API
+    if (this.medTest != null) {
+      console.log("Start updating....");
+      this.isUpdating = true;
+      this.medTestService.setMedTestAsUsed(this.medTest).subscribe({
+        next: data => {
+          console.log("UPDATE successful: " + data);
+          this.isUpdating = false;
+          this.updated = true;
+        },
+        error: error => {
+          console.log('UPDATE failed: ', error);
+          this.isUpdating = false;
+        }
+      });
+    }
   }
 }

@@ -1,24 +1,42 @@
 <div *ngIf="medTest; else noTest"
     class="container"
 >
-<div *ngIf="!medTest?.isUsed; else alreadyUsed">
-    <h3>You Scanned The Following Product:</h3>
-    <h1>{{medTest?.medProductId}}</h1>
-    <div>
-        <button mat-raised-button color="primary" (click)="updateTest()">Use It Now</button>
+    <div *ngIf="!medTest.isUsed; else alreadyUsed"
+        class="goodTest"
+    >
+        <div>
+            <h3>You scanned she following product:</h3>
+            <h1>{{medTest.medProductId}}</h1>
+            <p>Made By <b>Roche Diagnostics</b></p>
+        </div>
+        <div *ngIf="!isUpdating; else updating">
+            <button mat-raised-button color="primary" (click)="updateTest()"><h1>Use It Now</h1></button>
+        </div>
+        <ng-template #updating>
+            <div>
+                <h3>We're updating Your test....</h3>
+                <mat-spinner></mat-spinner>    
+            </div>
+        </ng-template>
     </div>
-</div>
-<ng-template #alreadyUsed>
-    <div>
-        <h3>Beware!</h3>
-        <h1>Your Product {{medTest?.medProductId}} is marked as used!</h1>
-        <p>If you haven't scanned this test before, you shouldn't use it anymore</p>
-    </div>
-</ng-template>
-    
+    <ng-template #alreadyUsed>
+        <div class="badTest">
+            <div>
+                <h1>Beware!</h1>
+                <h3>Your Product </h3>
+                <h3><b>{{medTest.medProductId}}</b></h3>
+                <h3>has been used before!</h3>
+            </div>
+        </div>
+    </ng-template>
 </div>
 <ng-template #noTest>
-    <div>
-        No Test Found!
+    <div class="container">
+        <div *ngIf="showLoading; else noTestFound">
+            <mat-spinner></mat-spinner>
+        </div>
+        <ng-template #noTestFound>
+            <h1>No Test Found!</h1>
+        </ng-template>
     </div>
 </ng-template>

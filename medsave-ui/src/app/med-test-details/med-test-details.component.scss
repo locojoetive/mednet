@@ -1,6 +1,29 @@
-.container {
+button {
+    height: 120px;
+    width: 200px;
+    box-shadow: 50em;
+}
+
+div {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.container {
+    height: 100%;
     justify-content: center;
+}
+
+.goodTest {
+    height: 100%;
+    justify-content: space-evenly;
+}
+
+
+.badTest {
+    height: 100%;
+    background-color: crimson;
+    justify-content: space-evenly;
 }
