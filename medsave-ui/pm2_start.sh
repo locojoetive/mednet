@@ -1,2 +1,2 @@
 #!/bin/bash
-ng serve --port 4201
+npm start
