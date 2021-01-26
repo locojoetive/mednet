@@ -1,1 +1,24 @@
-<p>med-test-details works!</p>
+<div *ngIf="medTest; else noTest"
+    class="container"
+>
+<div *ngIf="!medTest?.isUsed; else alreadyUsed">
+    <h3>You Scanned The Following Product:</h3>
+    <h1>{{medTest?.medProductId}}</h1>
+    <div>
+        <button mat-raised-button color="primary" (click)="updateTest()">Use It Now</button>
+    </div>
+</div>
+<ng-template #alreadyUsed>
+    <div>
+        <h3>Beware!</h3>
+        <h1>Your Product {{medTest?.medProductId}} is marked as used!</h1>
+        <p>If you haven't scanned this test before, you shouldn't use it anymore</p>
+    </div>
+</ng-template>
+    
+</div>
+<ng-template #noTest>
+    <div>
+        No Test Found!
+    </div>
+</ng-template>

@@ -3,7 +3,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { IMedTest } from '../IMedTest';
 import { MedTestService } from '../med-test.service';
 
-import { Observable } from 'rxjs';
+import { Observable, pipe } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
@@ -13,6 +13,7 @@ import { switchMap } from 'rxjs/operators';
 })
 export class MedTestDetailsComponent {
   medTest: IMedTest | null = null;
+  showTest = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -23,9 +24,8 @@ export class MedTestDetailsComponent {
   ngOnInit() {
     this.route.paramMap.pipe(
       switchMap((params: ParamMap) => {
-        let key = params.get('id');
+        const key = params.get('id');
         if (key) {
-          key = key?.substr(1, key.length - 1);
           console.log("Requesting " + key);
           return this.medTestService.getMedTest(key);
         } else {
@@ -33,9 +33,15 @@ export class MedTestDetailsComponent {
           return new Observable<any>();
         }
       })
-    ).subscribe((medTest: IMedTest) =>{
-      console.log(medTest);
-      this.medTest = medTest;
-    })
+    ).subscribe(data => {
+      this.medTest = data;
+      console.log(this.medTest);
+      this.showTest = true;
+    });
+  }
+
+
+  updateTest() {
+    // TODO: set isUsed true and call API
   }
 }

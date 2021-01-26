@@ -1,5 +1,4 @@
-import { Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IMedTest } from './IMedTest';
@@ -8,10 +7,10 @@ import { IMedTest } from './IMedTest';
   providedIn: 'root'
 })
 export class MedTestService {
-
+  url = 'http://8cb54631e7a8.ngrok.io/api/medTest/';
   constructor(private http: HttpClient) { }
 
-  getMedTest(key: string | null): Observable<IMedTest> {
-    return this.http.get<IMedTest>('http://localhost:8080/api/medTest/' + key)
+  getMedTest(key: string): Observable<IMedTest> {
+    return this.http.get<IMedTest>(this.url + key);
   }
 }

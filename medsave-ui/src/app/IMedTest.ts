@@ -1,7 +1,7 @@
-import { IRecord } from "./IRecord";
-
-export interface IMedTest {
-    key: string,
-    record: IRecord
+export class IMedTest {
+    id!: string;
+    medProductId!: string;
+    isUsed!: boolean;
+    docType!: string;
 }
   
