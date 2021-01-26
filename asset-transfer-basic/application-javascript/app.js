@@ -12,15 +12,10 @@ const cors = require('cors')
 const app = express();
 const bodyParser = require("body-parser");
 
-//Here we are configuring express to use body-parser as middle-ware.
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-var corsOptions = {
-	origin: 'http://localhost:4200',
-	optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204 
-}
 
-app.use(cors(corsOptions))
+app.use(cors());
 
 const channelName = 'mychannel';
 const chaincodeName = 'basic';
@@ -28,11 +23,11 @@ const mspOrg1 = 'Org1MSP';
 const walletPath = path.join(__dirname, 'wallet');
 const org1UserId = 'appUser';
 
+let contract;
+
 function prettyJSONString(inputString) {
 	return JSON.stringify(JSON.parse(inputString), null, 2);
 }
-
-let contract;
 
 async function authenticate(asyncMethod) {
 	try {
@@ -101,7 +96,7 @@ async function CreateMedTest(id, medProductId) {
 	console.log('\n--> Submit Transaction: CreateMedTest, creates new asset with ID and MedProduct ID');
 	const result = await contract.submitTransaction('CreateMedTest', id, medProductId);
 	console.log('*** Result: committed');
-	return "OK 200";
+	return result;
 }
 
 async function ReadMedTest(id) {
@@ -132,11 +127,12 @@ app.listen(8080, () => {
 });
 
 app.get('/api/medTest', async (req, res) => {
-	if (req.body.id) {
-		res.send(JSON.parse((await ReadMedTest(req.body.id)).toString()))
-	} else {
-		res.send(JSON.parse((await GetMedTests()).toString()))
-	}
+	res.send(JSON.parse((await GetMedTests()).toString()));
+});
+
+app.get('/api/medTest/:key', async (req, res) => {
+	const key = req.params.key;
+	res.send(JSON.parse((await ReadMedTest(key)).toString()));
 });
 
 app.post('/api/medTest', async (req, res) => {
