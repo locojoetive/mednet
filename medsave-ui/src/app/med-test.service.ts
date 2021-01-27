@@ -12,6 +12,16 @@ export class MedTestService {
 
   getMedTest(key: string): Observable<IMedTest> {
     const headers = new HttpHeaders().set("Bypass-Tunnel-Reminder", "something");
-    return this.http.get<IMedTest>(this.url + key, {headers});
+    return this.http.get<IMedTest>(this.url + key, { headers });
+  }
+
+
+  setMedTestAsUsed(medTest: IMedTest) {
+    const { key, id, medProductId } = medTest;
+    const body = { key, id, medProductId, isUsed: true };
+    const headers = new HttpHeaders().set("Bypass-Tunnel-Reminder", "something");
+    return this.http.put(this.url, body, { responseType: 'text' , headers });
   }
 }
+
+

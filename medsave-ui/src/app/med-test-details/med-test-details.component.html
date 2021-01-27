@@ -1,42 +1,53 @@
-<div *ngIf="medTest; else noTest"
-    class="container"
->
-    <div *ngIf="!medTest.isUsed; else alreadyUsed"
-        class="goodTest"
-    >
-        <div>
-            <h3>You scanned she following product:</h3>
-            <h1>{{medTest.medProductId}}</h1>
-            <p>Made By <b>Roche Diagnostics</b></p>
-        </div>
-        <div *ngIf="!isUpdating; else updating">
-            <button mat-raised-button color="primary" (click)="updateTest()"><h1>Use It Now</h1></button>
-        </div>
-        <ng-template #updating>
-            <div>
-                <h3>We're updating Your test....</h3>
-                <mat-spinner></mat-spinner>    
+<ng-container *ngIf="dataAvailable(); else noData">
+    <div class="container">
+        <ng-container *ngIf="isUsed(); else notUsed">
+            <div class="badTest">
+                <div>
+                    <h1>Beware!</h1>
+                    <h3>Your Product </h3>
+                    <h3><b>{{medTest?.medProductId}}</b></h3>
+                    <h3>has been used before!</h3>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #notUsed>
+            <div class="goodTest">
+                <div>
+                    <h3>You scanned she following product:</h3>
+                    <h1>{{medTest?.medProductId}}</h1>
+                    <p>Made By <b>GE Healthcare</b></p>
+                </div>
+                <div>
+                    <ng-template [ngIf]="isInState(State.INITIALIZED)">
+                        <button mat-raised-button color="primary" (click)="updateTest()"><h1>Use It Now</h1></button>
+                    </ng-template>
+                    <ng-template [ngIf]="isInState(State.UPDATING)">
+                        <h3>We're currently updating Your test....</h3>
+                        <mat-spinner></mat-spinner>    
+                    </ng-template>
+                    <ng-template [ngIf]="isInState(State.UPDATED)">
+                        <h3>Your Test was successfully updated!</h3>
+                        <h2>Thank you for choosing <b>Med<span class="save">SAVE</span></b></h2>
+                    </ng-template>
+                    <ng-template [ngIf]="isInState(State.UPDATE_FAILED)">
+                        <h3>Something went wrong...</h3>
+                        <h2>Please try again in a minute</h2>
+                    </ng-template>
+                </div>
             </div>
         </ng-template>
     </div>
-    <ng-template #alreadyUsed>
-        <div class="badTest">
-            <div>
-                <h1>Beware!</h1>
-                <h3>Your Product </h3>
-                <h3><b>{{medTest.medProductId}}</b></h3>
-                <h3>has been used before!</h3>
-            </div>
-        </div>
-    </ng-template>
-</div>
-<ng-template #noTest>
-    <div class="container">
-        <div *ngIf="showLoading; else noTestFound">
+</ng-container>
+
+<ng-template #noData>
+    <ng-container *ngIf="isInState(State.INITIALIZING); else noDataArrived">
+        <div class="container">
             <mat-spinner></mat-spinner>
         </div>
-        <ng-template #noTestFound>
+    </ng-container>
+    <ng-template #noDataArrived>
+        <div class="container">
             <h1>No Test Found!</h1>
-        </ng-template>
-    </div>
+        </div>
+    </ng-template>
 </ng-template>
