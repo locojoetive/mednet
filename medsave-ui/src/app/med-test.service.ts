@@ -7,7 +7,7 @@ import { IMedTest } from './IMedTest';
   providedIn: 'root'
 })
 export class MedTestService {
-  url = 'http://localhost:4201/api/medTest/';
+  url = 'https://medsave.loca.lt/api/medTest/';
   constructor(private http: HttpClient) { }
 
   getMedTest(key: string): Observable<IMedTest> {
