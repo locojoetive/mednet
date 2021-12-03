@@ -1,6 +1,7 @@
 #!/bin/bash
 export PROJECT_DIR=$(pwd)
-echo $PROJECT_DIR
+echo "current directory is " $PROJECT_DIR
+echo "current directory is project folder"
 
 # 1. Start Blockchain
 cd $PROJECT_DIR/test-network
