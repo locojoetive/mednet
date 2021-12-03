@@ -97,12 +97,20 @@ If it **is** marked as used, the consumer is redirected to the page like on the 
 
 ## 2. Setup project
 
-The following instructions are executed on an 64-bit Ubuntu 20 LTS.
-Pre-requisits:
+***NOTE:***
+the bash scripts to execute exposes the MedNET-backend and the MedSAVE UI via ngrok.
+
+### 2.1. Prerequisites
+
+**!The following instructions were executed on an 64-bit Ubuntu 20 LTS!**
+
 In order to execute the following bash script successfully you need to install the following programs
+- curl
 - git
+- npm
 - docker
 - docker-compose
+- ngrok
 
 Make sure the current user can run docker by running this command:
 
@@ -112,8 +120,19 @@ docker run hello-world
 
 If you have no permission to run this command, although docker is installed, follow the instructions [here](https://docs.docker.com/engine/install/linux-postinstall/).
 
-***NOTE:***
-the containing bash scripts expose the MedNET-backend and the MedSAVE UI via ngrok.
+
+Afterwards install Fabric and Fabric Samples by following the instructions [here](https://hyperledger-fabric.readthedocs.io/en/latest/install.html).
+
+Then install the process management tool PM2:
+
+```bash
+npm install pm2@latest -g
+```
+
+
+
+
+### 2.1. Setup MedNET
 
 Checkout this project:
 ```bash
